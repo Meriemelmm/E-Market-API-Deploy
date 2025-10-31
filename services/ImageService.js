@@ -76,7 +76,8 @@ class ImageService {
       // Generate different sizes
       for (const [sizeName, dimensions] of Object.entries(this.sizes)) {
         const filename = this.generateFilename(originalName, sizeName);
-        const outputPath = path.join(this.baseDir, sizeName, filename);
+        const sizeDir = sizeName === 'thumbnail' ? 'thumbnails' : sizeName;
+        const outputPath = path.join(this.baseDir, sizeDir, filename);
 
         await sharp(file.buffer)
           .resize(dimensions.width, dimensions.height, {
@@ -87,7 +88,7 @@ class ImageService {
           .toFile(outputPath);
 
         processedImages[sizeName] = {
-          url: `/uploads/products/${sizeName}/${filename}`,
+          url: `/uploads/products/${sizeDir}/${filename}`,
           filename: filename,
           width: dimensions.width,
           height: dimensions.height,

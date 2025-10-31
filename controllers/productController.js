@@ -309,7 +309,8 @@ async function createProduct(req, res, next) {
     // process images with ImageService
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = await ImageService.processMultipleImages(req.files);
+      const processedImages = await ImageService.processMultipleImages(req.files);
+      images = processedImages.map(img => img.original.url);
     }
 
     const categoryExists = await Category.find({ _id: { $in: categories } });
@@ -405,13 +406,8 @@ async function editProduct(req, res, next) {
     
     let newImages = [];
     if (req.files && req.files.length > 0) {
-      // delete old images
-      if (product.images && product.images.length > 0) {
-        for (const img of product.images) {
-          await ImageService.deleteImageFiles(img);
-        }
-      }
-      newImages = await ImageService.processMultipleImages(req.files);
+      const processedImages = await ImageService.processMultipleImages(req.files);
+      newImages = processedImages.map(img => img.original.url);
     }
 
     const updatedProduct = await Products.findByIdAndUpdate(
@@ -533,6 +529,9 @@ async function deactivationProduct(req, res, next) {
     next(error);
   }
 }
+async function searchProducts(req, res) {
+};
+
 
 module.exports = {
   getProducts,
@@ -542,4 +541,5 @@ module.exports = {
   deleteProduct,
   deactivationProduct,
   activateProduct,
+    searchProducts
 };

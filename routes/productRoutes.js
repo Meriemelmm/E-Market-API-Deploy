@@ -24,14 +24,15 @@ const router = express.Router();
 
 router.get("/", getProducts);
 router.get("/:id", getOneProduct);
+const auth=require('../middlewares/auth');
 
-router.post("/", strictLimiter, upload.array("images", 5), validate(createProductSchema), createProduct);
-router.put("/:id", strictLimiter, checkProductOwnership, upload.array("images", 5), validate(updateProductSchema), editProduct);
-router.post("/", strictLimiter, upload.array("images", 5), validate(createProductSchema), createProduct);
-router.put("/:id", strictLimiter, checkProductOwnership, upload.array("images", 5), validate(updateProductSchema), editProduct);
+router.post("/",auth, strictLimiter, upload.array("images", 5), validate(createProductSchema), createProduct);
+router.put("/:id",auth, strictLimiter, checkProductOwnership, upload.array("images", 5), validate(updateProductSchema), editProduct);
+router.post("/", auth,strictLimiter, upload.array("images", 5), validate(createProductSchema), createProduct);
+router.put("/:id",auth, strictLimiter, checkProductOwnership, upload.array("images", 5), validate(updateProductSchema), editProduct);
 
-router.delete("/:id", checkProductOwnership, deleteProduct);
-router.patch("/:id/activate", checkProductOwnership, activateProduct);
-router.patch("/:id/deactivate", checkProductOwnership, deactivationProduct);
+router.delete("/:id",auth, checkProductOwnership, deleteProduct);
+router.patch("/:id/activate", auth,checkProductOwnership, activateProduct);
+router.patch("/:id/deactivate",auth, checkProductOwnership, deactivationProduct);
 
 module.exports = router;
